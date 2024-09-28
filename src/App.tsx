@@ -4,9 +4,11 @@ import { QRCodeCanvas } from "qrcode.react";
 export default function App() {
   const [qrcode, setQrcode] = useState(<></>);
   const [fpsCount, setFpsCount] = useState(0);
-  const [qrSize, setQrSize] = useState(Math.min(window.innerWidth, window.innerHeight) * (2 / 3));
+  const [qrSize, setQrSize] = useState(
+    Math.min(window.innerWidth, window.innerHeight) * (2 / 3)
+  );
   const counterRef = useRef(0);
-  const fps = 30;
+  const [fps, setFps] = useState(30);
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,7 +35,7 @@ export default function App() {
     return () => {
       clearInterval(timer);
     };
-  }, [qrSize]);
+  }, [qrSize, fps]);
 
   useEffect(() => {
     const fpsTimer = setInterval(() => {
@@ -49,8 +51,24 @@ export default function App() {
   return (
     <main className="h-screen w-full bg-slate-500 flex justify-center items-center">
       {/* FPS Counter */}
-      <div className="absolute top-0 left-0 text-white text-xl m-2">
-        FPS: {fpsCount}
+      <div className="absolute top-0 left-0 text-white text-xl m-2 flex flex-col">
+        <p>FPS: {fpsCount}</p>
+        <span className="flex items-center gap-2">
+          <p>Set:</p>
+          <select
+            className="bg-slate-500 rounded-lg border"
+            onChange={(e) => {
+              setFps(parseInt(e.target.value));
+            }}
+            defaultValue={fps}
+          >
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>30</option>
+            <option>60</option>
+          </select>
+        </span>
       </div>
       {qrcode}
     </main>
